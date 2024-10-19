@@ -9,19 +9,23 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var JWTSetting = builder.Configuration.GetSection("JWTSettings");
+var jwtSettings = builder.Configuration.GetSection("JWTSettings");
 
 // Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options =>options.UseSqlServer(@"Server=(localdb)\simple-db;Database=simple-db;Trusted_Connection=True;"));
-builder.Services.AddIdentity<AppUser, IdentityRole>()
-.AddEntityFrameworkStores<AppDbContext>()
-.AddDefaultTokenProviders();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(@"Server=(localdb)\simple-db;Database=simple-db;Trusted_Connection=True;"));
 
-builder.Services.AddAuthentication(opt =>
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
+
+builder.Services.AddAuthentication(options =>
 {
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
     options.SaveToken = true;
@@ -32,16 +36,18 @@ builder.Services.AddAuthentication(opt =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidAudience = JWTSetting["ValidAudience"],
-        ValidIssuer = JWTSetting["ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTSetting.GetSection("SecurityKey").Value!))
+        ValidAudience = jwtSettings["Audience"], // Change to "Audience"
+        ValidIssuer = jwtSettings["Issuer"],     // Change to "Issuer"
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"])) // Change to "SecretKey"
     };
 });
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c=>{
+builder.Services.AddSwaggerGen(c =>
+{
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme. Example: 'Bearer asdfghjklqwert'",
@@ -79,8 +85,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-
+app.UseAuthentication(); // Ensure authentication is added here
 app.UseAuthorization();
 
 app.MapControllers();

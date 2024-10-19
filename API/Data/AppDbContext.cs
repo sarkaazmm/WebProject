@@ -10,5 +10,14 @@ namespace API.Data
         {
             
         }
+        
+        public DbSet<PrimarCheckHistory> PrimarCheckHistories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<PrimarCheckHistory>().ToTable("PrimarCheckHistory");
+        }
     }
 }
