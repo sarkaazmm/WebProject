@@ -8,6 +8,6 @@ namespace API.Models
     {
         public override string? UserName { get; set; }
         public override string? Email { get; set; }
-        public override string? PasswordHash { get; set; }
+        public override string? PasswordHash { get; set; }   
     }
 }
