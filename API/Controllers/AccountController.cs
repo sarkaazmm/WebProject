@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 // api/account
@@ -29,6 +30,7 @@ public class AccountController:ControllerBase
     }
 
     //api/account/register
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<string>> Register(RegisterDto registerDto){
         var userExist = await _userManager.FindByEmailAsync(registerDto.Email);
@@ -61,6 +63,7 @@ public class AccountController:ControllerBase
     }
 
     //api/account/login
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponceDto>> Login(LoginDto loginDto){
         if (!ModelState.IsValid){
