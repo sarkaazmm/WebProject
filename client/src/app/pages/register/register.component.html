@@ -1,0 +1,45 @@
+<div class="h-screen flex items-center justify-center">
+    <form class="shadow-md rounded-lg p-5 bg-white w-1/4" [formGroup]="registerForm" (ngSubmit)="register()">
+        
+        <!-- Виправлено синтаксис Angular: використовується *ngFor замість @for -->
+        <div *ngFor="let error of errors" class="dg-red-100 border mb-2 flex flex-col gap-2 border-red-400 text-red-400 px-4 py-4 rounded-md relative">
+            <div class="text-xs">{{ error }}</div> <!-- Виправлено опечатку "taxt-xs" на "text-xs" -->
+        </div>
+
+        <div class="py-4">
+            <h1 class="font-bold py-2 text-2xl">Register</h1>
+            <h6 class="text-slate-600 text-base">Create your account</h6>
+        </div>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="Email" formControlName="email" />
+            <mat-icon matPrefix>email</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Username</mat-label>
+            <input matInput placeholder="Username" formControlName="username" />
+            <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Password</mat-label>
+            <!-- Додано formControlName="password" для коректного зв'язку з формою -->
+            <input matInput [type]="hide ? 'password' : 'text'" placeholder="password" formControlName="password" />
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix (click)="hide = !hide" type="button">
+                <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <button [disabled]="!registerForm.valid" class="w-full bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded mt-4" type="submit">
+            Register
+        </button>
+
+        <div class="my-5">
+            <span class="text-slate-600">Already have an account? </span>
+            <a class="text-teal-500" [routerLink]="['/login']">Login</a>
+        </div>
+    </form>
+</div>

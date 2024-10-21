@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { LoginRequest } from '../interfaces/login-request';
 import { AuthResponse } from '../interfaces/auth-response'; // Import AuthResponse
 import { HttpClient } from '@angular/common/http';
+import { RegisterRequest } from '../interfaces/register-request';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,17 @@ export class AuthService {
         return response;
       })
     );
-
-  
+  }
+  register(data: RegisterRequest): Observable<AuthResponse> {
+    return this.http
+    .post<AuthResponse>(`${this.apoUrl}account/register`, data)
+    .pipe(
+      map((response) => {
+        if(response.isSuccess) {
+          localStorage.setItem(this.tokenkey, response.token);
+        }
+        return response;
+      })
+    );
   }
 }

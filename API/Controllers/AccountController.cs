@@ -40,7 +40,7 @@ public class AccountController:ControllerBase
         var user = new AppUser{
             Email = registerDto.Email,
             UserName = registerDto.UserName,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.PasswordHash),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
          
         };
 

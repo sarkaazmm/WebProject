@@ -2,19 +2,22 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router'; 
-import { AuthService } from '../../sevices/auth.service';
+import { Router, RouterLink } from '@angular/router'; 
+import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common'; // Додайте імпорт CommonModule
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, MatInputModule, RouterLink, MatIconModule, ReactiveFormsModule], // Додайте CommonModule сюди
+  imports: [CommonModule, MatInputModule, RouterLink, MatIconModule, MatSnackBarModule, ReactiveFormsModule], // Додайте CommonModule сюди
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'] // Зверніть увагу, тут має бути styleUrls, а не styleUrl
 })
 export class LoginComponent implements OnInit {
   authServise = inject(AuthService);
+  matSnackBar = inject(MatSnackBar);
+  router= inject(Router);
   hide = true;
   form!: FormGroup;
   fb = inject(FormBuilder);
@@ -27,8 +30,20 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.authServise.login(this.form.value).subscribe((response) => { 
-      console.log(response);
+    this.authServise.login(this.form.value).subscribe({
+      next: (response) => {
+        this.matSnackBar.open(response.message, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+        })
+        this.router.navigate(['/']);
+      },
+      error: (error) => {
+        this.matSnackBar.open(error.error.message, 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+        })
+      }
     });
   }
 }
