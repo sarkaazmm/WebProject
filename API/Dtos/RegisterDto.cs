@@ -15,6 +15,5 @@ namespace API.Dtos
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 
-        public List<string>? Roles { get; set; } = [];
     }
 }

@@ -40,7 +40,8 @@ public class AccountController:ControllerBase
         var user = new AppUser{
             Email = registerDto.Email,
             UserName = registerDto.UserName,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.PasswordHash)
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.PasswordHash),
+         
         };
 
         var result = await _userManager.CreateAsync(user);
@@ -48,18 +49,12 @@ public class AccountController:ControllerBase
             return BadRequest(result.Errors);
         }
 
-        if (registerDto.Roles is null){
-            await _userManager.AddToRoleAsync(user, "User");
-        }
-        else{
-            foreach(var role in registerDto.Roles){
-                await _userManager.AddToRoleAsync(user, role);
-            }
-        }
+        await _userManager.AddToRoleAsync(user, "User");
+        
         return Ok(new AuthResponceDto{
             IsSuccess = true,
             Message = "Account created successfully"
-            });
+        });
     }
 
     //api/account/login

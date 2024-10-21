@@ -8,9 +8,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Services;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("JWTSettings");
+
+builder.Services.AddCors(options => 
+{ 
+    options.AddPolicy("AllowSpecificOrigin", 
+        builder => builder.WithOrigins("http://localhost:4200") 
+                          .AllowAnyMethod() 
+                          .AllowAnyHeader()); 
+});
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -87,6 +96,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowSpecificOrigin");
+
 app.UseAuthentication(); // Ensure authentication is added here
 app.UseAuthorization();
 

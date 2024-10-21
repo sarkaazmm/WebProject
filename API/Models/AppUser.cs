@@ -6,8 +6,9 @@ namespace API.Models
     [Table("AspNetUsers")]
     public class AppUser:IdentityUser
     {
-        public override string? UserName { get; set; }
-        public override string? Email { get; set; }
+        public required override string? UserName { get; set; }
+        public required override string? Email { get; set; }
         public override string? PasswordHash { get; set; }   
+
     }
 }

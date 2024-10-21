@@ -1,0 +1,37 @@
+<div class="h-screen flex items-center justify-center">
+    <form class="shadow-md rounded-lg p-5 bg-white w-1/4" [formGroup]="form" (ngSubmit)="login()">
+        <div class="py-4">
+            <h1 class="font-bold py-2 text-2xl">Login</h1>
+            <h6 class="text-slate-600 text-base">Login to your account</h6>
+        </div>
+
+        <!-- Identifier Field (Email or Username) -->
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Email or Username</mat-label>
+            <input matInput placeholder="Email or Username" formControlName="userIdentifier"/>
+            <mat-icon matPrefix>account_circle</mat-icon>
+            <mat-error *ngIf="form.get('userIdentifier')?.hasError('required')">This field is required</mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="fill" class="w-full">
+            <mat-label>Password</mat-label>
+            <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" placeholder="Password"/>
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-icon (click)="hide = !hide" matSuffix>
+                {{hide ? 'visibility_off' : 'visibility'}}
+            </mat-icon>
+            <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
+            <mat-error *ngIf="form.get('password')?.hasError('minlength')">Password must be at least 6 characters</mat-error>
+        </mat-form-field>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full border border-slate-200 rounded-lg py-2 px-3 bg-teal-500 text-white font-bold" [disabled]="form.invalid">
+            Login
+        </button>
+        <div class ="my-5">
+            <span class="text-slate-600">Don't have an account? </span>
+            <a class="text-teal-500" [routerLink]="['/register']" >Register</a>
+        </div>
+    </form>
+</div>
