@@ -2,66 +2,69 @@ using API.Data;
 using API.Models;
 using System;
 
-namespace API.Services
+namespace API.Services;
+public static class PrimeCheckService
 {
-    public class PrimeCheckService
+
+    public static async System.Threading.Tasks.Task IsPrime(int taskId, AppDbContext _context)
     {
-        private readonly AppDbContext _context;
+        int count = 0;
+        var task = _context.PrimeCheckHistory
+            .FirstOrDefault(p => p.Id == taskId);
 
-        public PrimeCheckService(AppDbContext context)
+        if (task == null)
         {
-            _context = context;
+            throw new Exception("Task not found.");
         }
 
-        public bool IsPrime(int number, string userId)
+        int number = task.Number;
+        int progressStep = number / 100 * 5;
+        int currentProgress = progressStep;
+
+        var cancellationToken = _context.CancellationToken
+            .FirstOrDefault(p => p.PrimeCheckHistoryId == taskId);
+
+        for (int i = 1; i <= number; i += 1)
         {
-            if (number <= 1) return false;
-            if (number == 2) return true;
-            if (number % 2 == 0) return false;
-
-            var boundary = (int)Math.Floor(Math.Sqrt(number));
-            int progressStep = boundary / 20; // 5% of the range
-            int nextProgressUpdate = progressStep;
-
-            for (int i = 3; i <= boundary; i += 2)
+            if (cancellationToken == null)
             {
-                if (number % i == 0) return false;
-
-                if (i >= nextProgressUpdate)
-                {
-                    System.Threading.Thread.Sleep(2000);
-                    int progress = (int)(((double)i / boundary) * 100);
-                    UpdateProgress(userId, number, progress);
-                    nextProgressUpdate += progressStep;
-                }
+                throw new Exception("Task not found.");
             }
+            await _context.Entry(cancellationToken).ReloadAsync();
+            if (cancellationToken.IsCanceled)
+            {
+                throw new OperationCanceledException();
+            }
+            if (number % i == 0) count++;
+            await System.Threading.Tasks.Task.Delay(100);  // затримка для імітації прогресу
 
-            return true;
+            // Оновлюємо прогрес кожні 5% від загальної кількості ітерацій
+            if (i == currentProgress)
+            {
+                UpdateProgress(taskId, (double)i / number * 100, _context);
+                currentProgress += progressStep;
+            }
         }
 
-        private void UpdateProgress(string userId, int number, int progress)
+        UpdateProgress(taskId, 100, _context);
+
+        task.IsPrime = count == 2;
+        _context.PrimeCheckHistory.Update(task);
+        await _context.SaveChangesAsync();
+    }
+
+    private static void UpdateProgress(int taskId, double progress, AppDbContext _context)
+    {
+        var progressEntry = _context.PrimeCheckHistory
+            .FirstOrDefault(p => p.Id == taskId);
+
+        if (progressEntry == null)
         {
-            var progressEntry = _context.PrimeCheckHistory
-                .FirstOrDefault(p => p.UserId == userId && p.Number == number);
-
-            if (progressEntry == null)
-            {
-                progressEntry = new PrimeCheckHistory
-                {
-                    UserId = userId,
-                    Number = number,
-                    Progress = progress,
-                };
-                _context.PrimeCheckHistory.Add(progressEntry);
-            }
-            else
-            {
-                progressEntry.Progress = progress;
-                _context.PrimeCheckHistory.Update(progressEntry);
-            }
-
-            _context.SaveChanges();
+            throw new Exception("Task not found.");
         }
+
+        progressEntry.Progress = (int)progress;
+        _context.PrimeCheckHistory.Update(progressEntry);
+        _context.SaveChanges();
     }
 }
-

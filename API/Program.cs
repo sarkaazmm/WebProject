@@ -30,7 +30,6 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
-builder.Services.AddScoped<PrimeCheckService>();
 
 builder.Services.AddAuthentication(options =>
 {
