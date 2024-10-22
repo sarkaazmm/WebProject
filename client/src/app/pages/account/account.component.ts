@@ -10,5 +10,5 @@ import { AuthService } from '../../services/auth.service';
 })
 export class AccountComponent {
   authService = inject(AuthService);
-  accountDetails = this.authService.getDetail();
+  accountDetails = this.authService.getUserDetails();
 }
