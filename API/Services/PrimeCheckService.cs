@@ -12,10 +12,7 @@ public static class PrimeCheckService
         var task = _context.PrimeCheckHistory
             .FirstOrDefault(p => p.Id == taskId);
 
-        if (task == null)
-        {
-            throw new Exception("Task not found.");
-        }
+        if (task == null) throw new Exception("Task not found.");
 
         int number = task.Number;
         int progressStep = number / 100 * 5;
@@ -26,19 +23,19 @@ public static class PrimeCheckService
 
         for (int i = 1; i <= number; i += 1)
         {
-            if (cancellationToken == null)
-            {
-                throw new Exception("Task not found.");
-            }
+            if (cancellationToken == null) throw new Exception("Task not found.");
+            
             await _context.Entry(cancellationToken).ReloadAsync();
+
             if (cancellationToken.IsCanceled)
-            {
+            { 
+                task.Progress = -1;
                 throw new OperationCanceledException();
             }
+            
             if (number % i == 0) count++;
-            await System.Threading.Tasks.Task.Delay(100);  // затримка для імітації прогресу
+            await System.Threading.Tasks.Task.Delay(100);  
 
-            // Оновлюємо прогрес кожні 5% від загальної кількості ітерацій
             if (i == currentProgress)
             {
                 UpdateProgress(taskId, (double)i / number * 100, _context);

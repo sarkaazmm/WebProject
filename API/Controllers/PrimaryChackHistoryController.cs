@@ -37,7 +37,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         _context.PrimeCheckHistory.Add(primeCheckHistory);
         await _context.SaveChangesAsync();
 
-         var cancellationToken = new Models.CancellationToken
+        var cancellationToken = new Models.CancellationToken
         {
             PrimeCheckHistoryId = primeCheckHistory.Id,
             IsCanceled = false
@@ -66,8 +66,6 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
             }
             catch (Exception ex)
             {
-                //cancelled
-
                 Console.WriteLine($"\n\n\n\n\n\n\n\n\n\nError processing prime check task: {ex.Message}\n\n\n\n\n\n\n\n\n\n");
             }
         });
@@ -75,6 +73,56 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(new { message = "Task started successfully", taskId = primeCheckHistory.Id });
     }
 
+    [HttpPost("cancel-request/{id}")]
+    public async Task<IActionResult> CancelRequest(int id)
+    {
+        try
+        {
+            // Find cancellation token
+            var cancellationToken = await _context.CancellationToken
+                .FirstOrDefaultAsync(r => r.PrimeCheckHistoryId == id);
+
+            if (cancellationToken == null)
+                return NotFound("Cancellation token not found for this request.");
+
+            // Find the task
+            var task = await _context.PrimeCheckHistory
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (task == null)
+                return NotFound("Prime check task not found.");
+
+            // Check if task is already completed
+            if (task.Progress == 100)
+                return BadRequest("Cannot cancel completed task.");
+
+            // Check if task is already cancelled
+            if (task.Progress == -1)
+                return BadRequest("Task is already cancelled.");
+
+            // Update cancellation token
+            cancellationToken.IsCanceled = true;
+            await _context.SaveChangesAsync();
+
+            // Update task status immediately
+            task.Progress = -1;
+            _context.PrimeCheckHistory.Update(task);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { 
+                message = "Request cancelled successfully",
+                taskId = id,
+                status = "Cancelled"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { 
+                message = "An error occurred while cancelling the request",
+                error = ex.Message
+            });
+        }
+    }
 
     [HttpGet("all-requests")]
     public async Task<IActionResult> GetAllRequests()
@@ -118,5 +166,6 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(progress);
     }
 
+     
 }
 
