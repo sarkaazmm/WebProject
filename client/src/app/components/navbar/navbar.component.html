@@ -6,41 +6,39 @@
     <a routerLink="/">Simple¿</a>
     <div class="w-full"></div>   
 
-    <div *ngIf="isLoggedIn()" class="flex gap-6 items-center">
-        <a [matMenuTriggerFor]="menu" class="flex gap-2 cursor-pointer items-center">
-            <div class="bg-teal-400 text-black font-bold shadow-md rounded-full w-5 h-5 p-5 flex justify-center">
-                A
-            </div>
-            <div class="text-black flex flex-col">
-                <h1 class="p-0 m-0 font-medium">
-                    {{username}}
-                </h1>
-                <p class="p-0 m-0 font-medium text-xs">
-                  {{role}}
-                </p>
-            </div>
-        </a>
-        <mat-menu #menu="matMenu">
-            <button [routerLink]="['accout', 1]" mat-menu-item>
-                <mat-icon>accout_cricle</mat-icon>
-                <span>
-                  View Profile
-                </span>
-            </button>
-            <button (click)="onLogout()" mat-menu-item>
-              <mat-icon>logout</mat-icon>
-              <span>Logout</span>
-            </button>
-        </mat-menu>
-    </div>
-
-        <div>
-          <div class="flex gap-1 items-center">
-            <a mat-button routerLink="/login">Login</a>
-            <a mat-button routerLink="/register">Register</a>
-          </div>
+    <div *ngIf="isLoggedIn(); else guestLinks" class="flex gap-6 items-center">
+      <a [matMenuTriggerFor]="menu" class="flex gap-2 cursor-pointer items-center">
+        <div class="bg-teal-400 text-black font-bold shadow-md rounded-full w-5 h-5 p-5 flex justify-center">
+          A
         </div>
-      </mat-toolbar>
+        <div class="text-black flex flex-col">
+          <h1 class="p-0 m-0 font-medium">
+            {{ username }}
+          </h1>
+          <p class="p-0 m-0 font-medium text-xs">
+            {{ role }}
+          </p>
+        </div>
+      </a>
+      <mat-menu #menu="matMenu">
+        <button [routerLink]="['/account', 3]" mat-menu-item>
+          <mat-icon>account_circle</mat-icon>
+          <span>View Profile</span>
+        </button>
+        <button (click)="onLogout()" mat-menu-item>
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
     </div>
 
-  
+    <!-- Лінки для незалогінених користувачів -->
+    <ng-template #guestLinks>
+      <div class="flex gap-1 items-center">
+        <a mat-button routerLink="/login">Login</a>
+        <a mat-button routerLink="/register">Register</a>
+      </div>
+    </ng-template>
+
+  </mat-toolbar>
+</div>

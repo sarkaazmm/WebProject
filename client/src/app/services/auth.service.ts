@@ -21,6 +21,9 @@ interface DecodedToken extends JwtPayload {
   providedIn: 'root'
 })
 export class AuthService {
+  getAccountDetails(): DecodedToken | null {
+    throw new Error('Method not implemented.');
+  }
   private readonly apiUrl: string;
   private readonly tokenKey = 'token';
   
