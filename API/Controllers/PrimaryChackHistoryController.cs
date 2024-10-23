@@ -18,14 +18,15 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     private readonly AppDbContext _context = context;
     private readonly IServiceProvider _serviceProvider = serviceProvider;
 
+    public static int TasksInProgressCount { get; private set; } = 0;
+
+    [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreatePrimeCheckRequest([FromBody] PrimeCheckRequestDto requestDto)
     {
         var user = await _userManager.FindByIdAsync(requestDto.UserId!);
         if (user == null)
-        {
             return NotFound("User not found.");
-        }
 
         var primeCheckHistory = new PrimeCheckHistory
         {
@@ -36,6 +37,8 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         };
         _context.PrimeCheckHistory.Add(primeCheckHistory);
         await _context.SaveChangesAsync();
+
+        TasksInProgressCount++;
 
         var cancellationToken = new Models.CancellationToken
         {
@@ -73,41 +76,38 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(new { message = "Task started successfully", taskId = primeCheckHistory.Id });
     }
 
+    [Authorize]
     [HttpPost("cancel-request/{id}")]
     public async Task<IActionResult> CancelRequest(int id)
     {
         try
         {
-            // Find cancellation token
             var cancellationToken = await _context.CancellationToken
                 .FirstOrDefaultAsync(r => r.PrimeCheckHistoryId == id);
 
             if (cancellationToken == null)
                 return NotFound("Cancellation token not found for this request.");
 
-            // Find the task
             var task = await _context.PrimeCheckHistory
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
                 return NotFound("Prime check task not found.");
 
-            // Check if task is already completed
             if (task.Progress == 100)
                 return BadRequest("Cannot cancel completed task.");
 
-            // Check if task is already cancelled
             if (task.Progress == -1)
                 return BadRequest("Task is already cancelled.");
 
-            // Update cancellation token
             cancellationToken.IsCanceled = true;
             await _context.SaveChangesAsync();
 
-            // Update task status immediately
             task.Progress = -1;
             _context.PrimeCheckHistory.Update(task);
             await _context.SaveChangesAsync();
+
+            TasksInProgressCount--;
 
             return Ok(new { 
                 message = "Request cancelled successfully",
@@ -124,6 +124,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         }
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("all-requests")]
     public async Task<IActionResult> GetAllRequests()
     {
@@ -131,41 +132,51 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(requests);
     }
 
+    [Authorize]
     [HttpGet("get-prime-chack-request{id}")]
     public async Task<IActionResult> GetRequest(int id)
     {
         var request = await _context.PrimeCheckHistory
             .FirstOrDefaultAsync(r => r.Id == id);
-        
         if (request == null)
         {
             return NotFound("Request not found.");
+        }
+
+        var currentUserId = _userManager.GetUserId(User);
+        if (request.UserId != currentUserId)
+        {
+            return Forbid("You are not authorized to access this request.");
         }
 
         return Ok(request);
     }
 
+    [Authorize]
     [HttpGet("get-prime-chack-request-progress{id}")]
     public async Task<IActionResult> GetRequestProgress(int id)
     {
-        var request = await _context.PrimeCheckHistory
-            .FirstOrDefaultAsync(r => r.Id == id);
-
-        if (request == null)
+        var progress = await _context.PrimeCheckHistory
+            .FirstOrDefaultAsync(p => p.Id == id);
+        if (progress == null)
         {
-            return NotFound("Request not found.");
+            return NotFound("Progress not found.");
         }
 
-        var progress = new
+        var currentUserId = _userManager.GetUserId(User);
+        if (progress.UserId != currentUserId)
         {
-            RequestId = request.Id,
-            Status = request.IsPrime ? "Completed" : "In Progress",
-            RequestDate = request.RequestDateTime
-        };
+            return Forbid("You are not authorized to access this progress.");
+        }
 
         return Ok(progress);
     }
 
-     
+    [Authorize]
+    [HttpGet("running-tasks-count")]
+    public IActionResult GetRunningTasksCount()
+    {
+        return Ok(new { count = TasksInProgressCount });
+    }
 }
 
