@@ -44,8 +44,8 @@ export class PrimeChackHistoryService {
     return this.http.get<PrimeChackHistory>(`${this.apiUrl}/get-prime-chack-request${id}`);
   }
 
-  getRequestProgress(id: number): Observable<PrimeChackHistory> {
-    return this.http.get<PrimeChackHistory>(`${this.apiUrl}/get-prime-chack-request-progress${id}`);
+  getRequestsByUserId(userId: string): Observable<PrimeChackHistory[]> {
+    return this.http.get<PrimeChackHistory[]>(`${this.apiUrl}/requests-by-user-id${userId}`);
   }
 
   getRunningTasksCount(): Observable<{ count: number }> {

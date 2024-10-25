@@ -1,24 +1,18 @@
 <div class="flex items-center justify-center h-screen">
   <div class="text-center">
-    <!-- Відображаємо для незалогінених користувачів -->
+    <!-- For non-logged-in users -->
     <div *ngIf="!isLoggedIn()">
-      <h1 class="text-4xl font-bold my-10">
-        Welcome to Simple¿
-      </h1>
+      <h1 class="text-4xl font-bold my-10">Welcome to Simple¿</h1>
       <div class="flex flex-col items-center gap-5">
         <a routerLink="/login">
-          <button class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md">
-            LogIn
-          </button>
+          <button class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md">LogIn</button>
         </a>
       </div>
     </div>
 
-    <!-- Відображаємо для залогінених користувачів -->
-    <div *ngIf="isLoggedIn()" class="pt-0"> <!-- Додаємо верхній відступ -->
-      <h1 class="text-4xl font-bold my-5">
-        Is the number prime¿
-      </h1>
+    <!-- For logged-in users -->
+    <div *ngIf="isLoggedIn()" class="pt-0">
+      <h1 class="text-4xl font-bold my-5">Is the number prime¿</h1>
       <input
         type="number"
         [value]="inputNumber"
@@ -40,6 +34,57 @@
         >
           Cancel
         </button>
+      </div>
+
+      <!-- Progress bar -->
+      <div *ngIf="isChecking" class="mt-4">
+        <div class="relative pt-1">
+          <div class="flex mb-2 items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold inline-block text-teal-600 uppercase px-2 py-1 rounded-full text-center">Progress</span>
+            </div>
+            <div>
+              <span class="text-xs font-semibold inline-block text-teal-600 uppercase px-2 py-1 rounded-full text-center">{{ progress }}%</span>
+            </div>
+          </div>
+          <div class="flex h-2 mb-4 overflow-hidden text-xs bg-gray-200 rounded">
+            <div [style.width]="progress + '%'" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-teal-500"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result display -->
+      <div *ngIf="result !== null" class="mt-4">
+        <h2 class="text-xl font-bold">{{ result }}</h2>
+      </div>
+
+      <!-- History Table -->
+      <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">Request History</h2>
+        <!-- Container with fixed height and scrolling -->
+        <div class="max-h-[400px] overflow-y-auto border rounded-lg shadow">
+          <!-- Table container with horizontal scroll -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white">
+              <thead class="bg-gray-50 sticky top-0">
+                <tr>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Number</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Progress</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Result</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-3/6">Request Date</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr *ngFor="let item of userRequestHistory" class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.number }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.progress }}%</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.isPrime ? 'Prime' : 'Not Prime' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ item.requestDateTime | date: 'medium' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -132,6 +132,23 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(requests);
     }
 
+
+    [Authorize]
+    [HttpGet("requests-by-user-id{id}")]
+    public async Task<IActionResult> GetRequestsByUserId(string id)
+    {
+        var requests = await _context.PrimeCheckHistory
+            .Where(r => r.UserId == id)
+            .ToListAsync();
+
+        if (requests == null || !requests.Any())
+        {
+            return NotFound();
+        }
+
+        return Ok(requests);
+    }
+
     [Authorize]
     [HttpGet("get-prime-chack-request{id}")]
     public async Task<IActionResult> GetRequest(int id)
@@ -156,20 +173,20 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     [HttpGet("get-prime-chack-request-progress{id}")]
     public async Task<IActionResult> GetRequestProgress(int id)
     {
-        var progress = await _context.PrimeCheckHistory
-            .FirstOrDefaultAsync(p => p.Id == id);
-        if (progress == null)
+        var request = await _context.PrimeCheckHistory
+            .FirstOrDefaultAsync(r => r.Id == id);
+        if (request == null)
         {
-            return NotFound("Progress not found.");
+            return NotFound("Request not found.");
         }
 
         var currentUserId = _userManager.GetUserId(User);
-        if (progress.UserId != currentUserId)
+        if (request.UserId != currentUserId)
         {
-            return Forbid("You are not authorized to access this progress.");
+            return Forbid("You are not authorized to access this request.");
         }
 
-        return Ok(progress);
+        return Ok(request.Progress);
     }
 
     [Authorize]
