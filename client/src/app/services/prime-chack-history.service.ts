@@ -35,7 +35,7 @@ export class PrimeChackHistoryService {
   cancelRequest(id: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/cancel-request/${id}`, {});
   }
-
+  
   getAllRequests(): Observable<PrimeChackHistory[]> {
     return this.http.get<PrimeChackHistory[]>(`${this.apiUrl}/all-requests`);
   }

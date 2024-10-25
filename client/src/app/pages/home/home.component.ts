@@ -13,14 +13,14 @@ import { PrimeChackHistory, PrimeChackHistoryService, PrimeChackRequest } from '
 })
 export class HomeComponent {
   currentUser: any;
-  inputNumber: number | null = null; // Variable for input number
-  isChecking: boolean = false; 
-  progress: number = 0; // Progress of the check
-  private progressInterval: any; // Interval for tracking progress
-  result: string | null = null; // Result of the check
-  taskId = 0; // Task ID
-  history: PrimeChackHistory[] = [];
-  userRequestHistory: PrimeChackHistory[] = []; 
+  inputNumber: number | null = null;
+  isChecking: boolean = false;
+  progress: number = 0;
+  private progressIntervals: Map<number, any> = new Map(); // Map to store intervals for each task
+  result: string | null = null;
+  taskId = 0;
+  userRequestHistory: PrimeChackHistory[] = [];
+  activeTasks: PrimeChackHistory[] = []; // Array to store multiple active tasks
 
   constructor(private authService: AuthService, private primeChackService: PrimeChackHistoryService) {
     this.authService.currentUser$.subscribe(x => this.currentUser = x);
@@ -40,11 +40,22 @@ export class HomeComponent {
   }
 
   loadRequestHistory(): void {
-    const currentUserId = this.authService.getCurrentUser()?.nameid; // Отримуємо ідентифікатор поточного користувача
-
+    const currentUserId = this.authService.getCurrentUser()?.nameid;
+  
     if (currentUserId) {
       this.primeChackService.getRequestsByUserId(currentUserId).subscribe(userRequests => {
-        this.userRequestHistory = userRequests;
+        // Separate active and completed tasks
+        this.activeTasks = userRequests.filter(req => req.progress >= 0 && req.progress < 100);
+        this.userRequestHistory = userRequests
+          .filter(req => req.progress === 100 || req.progress === -1)
+          .sort((a, b) => new Date(b.requestDateTime).getTime() - new Date(a.requestDateTime).getTime());
+        
+        // Start tracking progress for all active tasks
+        this.activeTasks.forEach(task => {
+          if (!this.progressIntervals.has(task.id)) {
+            this.trackProgress(task.id);
+          }
+        });
       });
     } else {
       console.error('Current user ID is undefined.');
@@ -61,6 +72,15 @@ export class HomeComponent {
     this.progress = 0;
     this.result = null;
 
+    const newTask: PrimeChackHistory = {
+      id: 0,
+      userId: this.currentUser?.nameid,
+      number: this.inputNumber,
+      isPrime: false,
+      progress: 0,
+      requestDateTime: new Date(),
+    };
+
     const request: PrimeChackRequest = {
       userId: this.currentUser?.nameid,
       number: this.inputNumber,
@@ -69,8 +89,9 @@ export class HomeComponent {
     this.primeChackService.createPrimeCheckRequest(request).subscribe({
       next: (response) => {
         console.log('Check initiated:', response);
-        this.taskId = response.taskId;
-        this.trackProgress();
+        newTask.id = response.taskId;
+        this.activeTasks.push(newTask);
+        this.trackProgress(response.taskId);
       },
       error: (error) => {
         console.error('Error during check:', error);
@@ -79,65 +100,63 @@ export class HomeComponent {
     });
   }
 
-  trackProgress(): void {
-    if (this.progressInterval) {
-      clearInterval(this.progressInterval);
+  trackProgress(taskId: number): void {
+    if (this.progressIntervals.has(taskId)) {
+      clearInterval(this.progressIntervals.get(taskId));
     }
 
-    this.progressInterval = setInterval(() => {
-      if (!this.isChecking) {
-        clearInterval(this.progressInterval);
-        return;
-      }
-
-      this.primeChackService.getRequest(this.taskId).subscribe({
+    const interval = setInterval(() => {
+      this.primeChackService.getRequest(taskId).subscribe({
         next: (history) => {
-          this.progress = history.progress;
-          
-          // Оновлюємо результат і історію коли процес завершено
-          if (this.progress >= 100) {
-            this.result = history.isPrime ? 'The number is prime.' : 'The number is not prime.';
-            clearInterval(this.progressInterval);
-            this.isChecking = false;
+          const taskIndex = this.activeTasks.findIndex(t => t.id === taskId);
+          if (taskIndex !== -1) {
+            this.activeTasks[taskIndex].progress = history.progress;
             
-            // Оновлюємо історію після завершення перевірки
-            this.loadRequestHistory();
+            if (history.progress >= 100 || history.progress === -1) {
+              this.activeTasks[taskIndex].isPrime = history.isPrime;
+              clearInterval(this.progressIntervals.get(taskId));
+              this.progressIntervals.delete(taskId);
+              // Move task to history
+              this.loadRequestHistory();
+            }
           }
         },
         error: (error) => {
           console.error('Error getting progress:', error);
-          clearInterval(this.progressInterval);
-          this.isChecking = false;
+          clearInterval(this.progressIntervals.get(taskId));
+          this.progressIntervals.delete(taskId);
         }
       });
     }, 1000);
+
+    this.progressIntervals.set(taskId, interval);
   }
 
-  cancelCheck(): void {
-    if (!this.isChecking) { // Змінено умову перевірки
-      alert('No check is currently in progress.');
+  cancelCheck(taskId: number): void {
+    const task = this.activeTasks.find(t => t.id === taskId);
+    if (!task) {
+      alert('Task not found.');
       return;
     }
 
-    if (this.progressInterval) {
-      clearInterval(this.progressInterval);
-    }
-
-    this.primeChackService.cancelRequest(this.taskId).subscribe({
+    this.primeChackService.cancelRequest(taskId).subscribe({
       next: (response) => {
         console.log('Check cancelled:', response);
-        this.isChecking = false;
-        this.progress = 0;
-        // Оновлюємо історію після скасування
+        if (this.progressIntervals.has(taskId)) {
+          clearInterval(this.progressIntervals.get(taskId));
+          this.progressIntervals.delete(taskId);
+        }
         this.loadRequestHistory();
       },
       error: (error) => {
         console.error('Error during check cancellation:', error);
-        this.isChecking = false;
       }
     });
   }
 
+  ngOnDestroy(): void {
+    // Clean up all intervals when component is destroyed
+    this.progressIntervals.forEach(interval => clearInterval(interval));
+    this.progressIntervals.clear();
+  }
 }
-
-

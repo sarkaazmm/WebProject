@@ -28,58 +28,62 @@
         >
           Check Prime
         </button>
-        <button
-          (click)="cancelCheck()"
-          class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
-        >
-          Cancel
-        </button>
-      </div>
-
-      <!-- Progress bar -->
-      <div *ngIf="isChecking" class="mt-4">
-        <div class="relative pt-1">
-          <div class="flex mb-2 items-center justify-between">
-            <div>
-              <span class="text-xs font-semibold inline-block text-teal-600 uppercase px-2 py-1 rounded-full text-center">Progress</span>
-            </div>
-            <div>
-              <span class="text-xs font-semibold inline-block text-teal-600 uppercase px-2 py-1 rounded-full text-center">{{ progress }}%</span>
-            </div>
-          </div>
-          <div class="flex h-2 mb-4 overflow-hidden text-xs bg-gray-200 rounded">
-            <div [style.width]="progress + '%'" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-teal-500"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Result display -->
-      <div *ngIf="result !== null" class="mt-4">
-        <h2 class="text-xl font-bold">{{ result }}</h2>
       </div>
 
       <!-- History Table -->
       <div class="mt-8">
         <h2 class="text-2xl font-bold mb-4">Request History</h2>
-        <!-- Container with fixed height and scrolling -->
         <div class="max-h-[400px] overflow-y-auto border rounded-lg shadow">
-          <!-- Table container with horizontal scroll -->
           <div class="overflow-x-auto">
             <table class="min-w-full bg-white">
               <thead class="bg-gray-50 sticky top-0">
                 <tr>
-                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Number</th>
-                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Progress</th>
-                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Result</th>
-                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-3/6">Request Date</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Number</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request Date</th>
+                  <th class="px-6 py-3 border-b text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
+                <!-- Active Tasks -->
+                <tr *ngFor="let task of activeTasks" class="bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap">{{ task.number }}</td>
+                  <td class="px-6 py-4">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div class="bg-teal-500 h-2.5 rounded-full" [style.width.%]="task.progress"></div>
+                    </div>
+                    <span class="text-xs text-gray-500 mt-1">{{ task.progress }}%</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">Checking...</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ task.requestDateTime | date: 'medium' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <button
+                      (click)="cancelCheck(task.id)"
+                      class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-1 px-2 rounded-md"
+                    >
+                      Cancel
+                    </button>
+                  </td>
+                </tr>
+                
+                <!-- Completed and Cancelled Tasks -->
                 <tr *ngFor="let item of userRequestHistory" class="hover:bg-gray-50">
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.number }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.progress }}%</td>
-                  <td class="px-6 py-4 whitespace-nowrap">{{ item.isPrime ? 'Prime' : 'Not Prime' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span [ngClass]="{
+                      'text-green-600': item.progress === 100,
+                      'text-red-600': item.progress === -1
+                    }">
+                      {{ item.progress === -1 ? 'Cancelled' : 'Completed' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span *ngIf="item.progress !== -1">{{ item.isPrime ? 'Prime' : 'Not Prime' }}</span>
+                    <span *ngIf="item.progress === -1">-</span>
+                  </td>
                   <td class="px-6 py-4 whitespace-nowrap">{{ item.requestDateTime | date: 'medium' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">-</td>
                 </tr>
               </tbody>
             </table>
