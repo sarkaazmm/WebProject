@@ -1,31 +1,46 @@
-<div class="flex item-center flex-col pt-56 h-screen">
-    <div class="h-screen">
-      <!-- Відображаємо для незалогінених користувачів -->
-      <div *ngIf="!isLoggedIn()" class="text-center">
-        <h1 class="text-4xl text-center font-bold my-10">
-          Welcome to Simple¿
-        </h1>
-        <div class="flex flex-col items-center gap-5 justify-center">
-          <a routerLink="/login">
-            <button class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md">
-              LogIn
-            </button>
-          </a>
-        </div>
-      </div>
-  
-      <!-- Відображаємо для залогінених користувачів -->
-      <div *ngIf="isLoggedIn()" class="text-center">
-        <h1 class="text-4xl font-bold my-10">
-          Welcome back, {{ currentUser?.name }}!
-        </h1>
-        <p class="text-lg">You can access your dashboard here:</p>
-        <a routerLink="/dashboard">
+<div class="flex items-center justify-center h-screen">
+  <div class="text-center">
+    <!-- Відображаємо для незалогінених користувачів -->
+    <div *ngIf="!isLoggedIn()">
+      <h1 class="text-4xl font-bold my-10">
+        Welcome to Simple¿
+      </h1>
+      <div class="flex flex-col items-center gap-5">
+        <a routerLink="/login">
           <button class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md">
-            Go to Dashboard
+            LogIn
           </button>
         </a>
       </div>
     </div>
+
+    <!-- Відображаємо для залогінених користувачів -->
+    <div *ngIf="isLoggedIn()" class="pt-0"> <!-- Додаємо верхній відступ -->
+      <h1 class="text-4xl font-bold my-5">
+        Is the number prime¿
+      </h1>
+      <input
+        type="number"
+        [value]="inputNumber"
+        (input)="onInputChange($event)"
+        class="border-2 border-gray-300 p-2 rounded-md w-64"
+        placeholder="Enter an integer"
+        required
+      />
+      <div class="flex justify-center gap-4 mt-4">
+        <button
+          (click)="checkPrime()"
+          class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md"
+        >
+          Check Prime
+        </button>
+        <button
+          (click)="cancelCheck()"
+          class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
   </div>
-  
+</div>

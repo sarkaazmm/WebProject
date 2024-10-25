@@ -21,6 +21,9 @@ export interface PrimeChackHistory {
   providedIn: 'root'
 })
 export class PrimeChackHistoryService {
+  isChecking() {
+    throw new Error('Method not implemented.');
+  }
   private readonly apiUrl = `${environment.apiUrl}PrimeChackHistory`;
 
   constructor(private http: HttpClient) {}
