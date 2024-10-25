@@ -1,0 +1,21 @@
+<div class="mx-60 py-10">
+    <h1 class="text-3xl font-bold">Users</h1>
+    <div class="w-full rounded-md">
+        <table class="w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 border py-2">Name</th>
+                    <th class="px-4 border py-2">Email</th>
+                    <th class="px-4 border py-2">Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of user$ | async; trackBy: trackById">
+                    <td class="px-4 border py-2">{{ item.userName }}</td>
+                    <td class="px-4 border py-2">{{ item.email }}</td>
+                    <td class="px-4 border py-2">{{ item.roles.join(',') || '-' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,15 +1,31 @@
 <div class="flex item-center flex-col pt-56 h-screen">
     <div class="h-screen">
+      <!-- Відображаємо для незалогінених користувачів -->
+      <div *ngIf="!isLoggedIn()" class="text-center">
         <h1 class="text-4xl text-center font-bold my-10">
-            Welcome to Simple¿
+          Welcome to Simple¿
         </h1>
         <div class="flex flex-col items-center gap-5 justify-center">
-            <a routerLink="/login">
-                <button class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md">
-                    LogIn
-                </button>
-            </a>
+          <a routerLink="/login">
+            <button class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md">
+              LogIn
+            </button>
+          </a>
         </div>
+      </div>
+  
+      <!-- Відображаємо для залогінених користувачів -->
+      <div *ngIf="isLoggedIn()" class="text-center">
+        <h1 class="text-4xl font-bold my-10">
+          Welcome back, {{ currentUser?.name }}!
+        </h1>
+        <p class="text-lg">You can access your dashboard here:</p>
+        <a routerLink="/dashboard">
+          <button class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md">
+            Go to Dashboard
+          </button>
+        </a>
+      </div>
     </div>
-</div>
-
+  </div>
+  

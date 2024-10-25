@@ -29,6 +29,10 @@
           <mat-icon>logout</mat-icon>
           <span>Logout</span>
         </button>
+        <a *ngIf ="getUserDetails()?.roles?.includes('Admin')" mat-menu-item routerLink="/users">
+          <mat-icon>groups</mat-icon>
+          <span>Users</span>
+      </a>
       </mat-menu>
     </div>
 

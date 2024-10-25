@@ -22,11 +22,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
   role: string = 'Unknown';
   private userSubscription?: Subscription;
 
+  accountDetails: { roles: string[] } | null = null;
+
   ngOnInit(): void {
     this.userSubscription = this.authService.currentUser$.subscribe(user => {
       this.username = user?.name || 'Guest';
       this.role = user?.role || 'Unknown';
     });
+  }
+
+  getUserDetails() {
+    return this.authService.getUserDetails();
   }
 
   ngOnDestroy(): void {

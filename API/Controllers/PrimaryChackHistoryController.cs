@@ -178,5 +178,6 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     {
         return Ok(new { count = TasksInProgressCount });
     }
+
 }
 

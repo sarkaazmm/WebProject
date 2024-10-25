@@ -21,33 +21,15 @@ interface DecodedToken extends JwtPayload {
   providedIn: 'root'
 })
 export class AuthService {
-  getAccountDetails(): DecodedToken | null {
-    throw new Error('Method not implemented.');
-  }
   private readonly apiUrl: string;
   private readonly tokenKey = 'token';
   
-  // Додаємо BehaviorSubject для відслідковування змін в авторизації
   private currentUserSubject = new BehaviorSubject<DecodedToken | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private readonly http: HttpClient) {
     this.apiUrl = environment.apiUrl;
-    // Ініціалізуємо currentUserSubject при створенні сервісу
     this.initializeUserState();
-  }
-
-  private initializeUserState(): void {
-    try {
-      const token = this.getToken();
-      if (token) {
-        const decodedToken = jwtDecode<DecodedToken>(token);
-        this.currentUserSubject.next(decodedToken);
-      }
-    } catch (error) {
-      console.error('Error initializing user state:', error);
-      this.logout();
-    }
   }
 
   login(data: LoginRequest): Observable<AuthResponse> {
@@ -90,10 +72,63 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
+  getUserDetails() {
+    const token = this.getToken();
+    if (!token) {
+      console.error('No token found');
+      return null;
+    }
+    
+    try {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      if (typeof decodedToken.role === 'string') {
+        decodedToken.roles = [decodedToken.role];
+      }
+      return decodedToken;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
+
+  getCurrentUserDetails(): DecodedToken | null {
+    const token = this.getToken();
+    if (!token) {
+      console.error('No token found');
+      return null;
+    }
+    
+    try {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      return {
+        nameid: decodedToken.nameid, // Assuming 'nameid' is the property for userId
+        role: decodedToken.role,
+        // Add other properties as needed
+      };
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
+
+  private initializeUserState(): void {
+    try {
+      const token = this.getToken();
+      if (token) {
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        this.currentUserSubject.next(decodedToken);
+      }
+    } catch (error) {
+      console.error('Error initializing user state:', error);
+      this.logout();
+    }
+  }
+
+
   private clearAuthData(): void {
     try {
       localStorage.removeItem(this.tokenKey);
-      sessionStorage.clear(); // Очищаємо також sessionStorage, якщо він використовується
+      sessionStorage.clear(); 
     } catch (error) {
       console.error('Error clearing auth data:', error);
     }
@@ -103,25 +138,18 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  getUserDetails(): DecodedToken | null {
-    try {
-      const token = this.getToken();
-      if (!token) {
-        return null;
-      }
-      
-      const decodedToken = jwtDecode<DecodedToken>(token);
-      // Оновлюємо currentUserSubject, якщо токен валідний
-      if (decodedToken && !this.isTokenExpired(token)) {
-        this.currentUserSubject.next(decodedToken);
-        return decodedToken;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error getting user details:', error);
-      this.logout();
-      return null;
-    }
+  getAll(): Observable<UserDetails[]> {
+    return this.http.get<UserDetails[]>(`${this.apiUrl}account/all-users-details`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getRoles=():string[] | null =>{
+    const token = this.getToken();
+    if (!token) return null;
+    
+    const decodedToken:any = jwtDecode(token);
+    return decodedToken.role || null;
   }
 
   isLoggedIn(): boolean {
@@ -152,7 +180,7 @@ export class AuthService {
     }
   }
 
-  private getToken(): string | null {
+  getToken(): string | null {
     try {
       return localStorage.getItem(this.tokenKey);
     } catch (error) {
