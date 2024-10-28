@@ -19,9 +19,11 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     private readonly IServiceProvider _serviceProvider = serviceProvider;
 
     public static int TasksInProgressCount { get; private set; } = 0;
+    private const int MaxActiveTasks = 5;
+    private const int MaxNumber = 1500;
 
 
-    // POST: api/primechackhistory/create
+// POST: api/primechackhistory/create
     [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreatePrimeCheckRequest([FromBody] PrimeCheckRequestDto requestDto)
@@ -30,12 +32,38 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         if (user == null)
             return NotFound("User not found.");
 
+        // Validate number range
+        if (requestDto.Number > MaxNumber)
+        {
+            return BadRequest(new { 
+                message = $"The number must not exceed {MaxNumber}.",
+                providedNumber = requestDto.Number,
+                maxAllowedNumber = MaxNumber
+            });
+        }
+
+        // Get active tasks count for the user
+        var activeTasksCount = await _context.PrimeCheckHistory
+            .CountAsync(x => x.UserId == requestDto.UserId 
+                && x.Progress != 100  // Not completed
+                && x.Progress != -1); // Not cancelled
+
+        if (activeTasksCount >= MaxActiveTasks)
+        {
+            return BadRequest(new { 
+                message = $"You have reached the maximum limit of {MaxActiveTasks} active tasks. Please wait for some tasks to complete or cancel existing tasks.",
+                currentActiveTasks = activeTasksCount,
+                maxAllowedTasks = MaxActiveTasks
+            });
+        }
+
         var primeCheckHistory = new PrimeCheckHistory
         {
             UserId = requestDto.UserId,
             Number = requestDto.Number,
             IsPrime = false,
-            RequestDateTime = DateTime.UtcNow
+            RequestDateTime = DateTime.UtcNow,
+            Progress = 0  // Explicitly set initial progress
         };
         _context.PrimeCheckHistory.Add(primeCheckHistory);
         await _context.SaveChangesAsync();
@@ -59,7 +87,6 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
                 using var scope = _serviceProvider.CreateScope();
                 scopedContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 await PrimeCheckService.IsPrime(primeCheckHistory.Id, scopedContext);
-                
             }
             catch (OperationCanceledException)
             {
@@ -71,12 +98,30 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\n\n\n\n\n\n\n\n\n\nError processing prime check task: {ex.Message}\n\n\n\n\n\n\n\n\n\n");
+                Console.WriteLine($"Error processing prime check task: {ex.Message}");
+                
+                // Update task status to error state
+                using var scope = _serviceProvider.CreateScope();
+                scopedContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var task = await scopedContext.PrimeCheckHistory.FindAsync(primeCheckHistory.Id);
+                if (task != null)
+                {
+                    task.Progress = -2; // Use -2 to indicate error state
+                    await scopedContext.SaveChangesAsync();
+                }
+                TasksInProgressCount--;
             }
         });
 
-        return Ok(new { message = "Task started successfully", taskId = primeCheckHistory.Id });
+        return Ok(new { 
+            message = "Task started successfully", 
+            taskId = primeCheckHistory.Id,
+            activeTasksCount = activeTasksCount + 1,
+            remainingTaskSlots = MaxActiveTasks - (activeTasksCount + 1),
+            number = requestDto.Number
+        });
     }
+
 
     [Authorize]
     [HttpPost("cancel-request/{id}")]

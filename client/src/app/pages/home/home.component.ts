@@ -16,11 +16,14 @@ export class HomeComponent {
   inputNumber: number | null = null;
   isChecking: boolean = false;
   progress: number = 0;
-  private progressIntervals: Map<number, any> = new Map(); // Map to store intervals for each task
+  private progressIntervals: Map<number, any> = new Map();
   result: string | null = null;
   taskId = 0;
   userRequestHistory: PrimeChackHistory[] = [];
-  activeTasks: PrimeChackHistory[] = []; // Array to store multiple active tasks
+  activeTasks: PrimeChackHistory[] = [];
+  
+  private readonly MAX_NUMBER = 1500;
+  private readonly MAX_ACTIVE_TASKS = 5;
 
   constructor(private authService: AuthService, private primeChackService: PrimeChackHistoryService) {
     this.authService.currentUser$.subscribe(x => this.currentUser = x);
@@ -39,32 +42,26 @@ export class HomeComponent {
     this.inputNumber = parseInt(input.value, 10);
   }
 
-  loadRequestHistory(): void {
-    const currentUserId = this.authService.getCurrentUser()?.nameid;
-  
-    if (currentUserId) {
-      this.primeChackService.getRequestsByUserId(currentUserId).subscribe(userRequests => {
-        // Separate active and completed tasks
-        this.activeTasks = userRequests.filter(req => req.progress >= 0 && req.progress < 100);
-        this.userRequestHistory = userRequests
-          .filter(req => req.progress === 100 || req.progress === -1)
-          .sort((a, b) => new Date(b.requestDateTime).getTime() - new Date(a.requestDateTime).getTime());
-        
-        // Start tracking progress for all active tasks
-        this.activeTasks.forEach(task => {
-          if (!this.progressIntervals.has(task.id)) {
-            this.trackProgress(task.id);
-          }
-        });
-      });
-    } else {
-      console.error('Current user ID is undefined.');
+  private validateCheck(): string | null {
+    if (this.inputNumber === null) {
+      return 'Please enter a valid integer.';
     }
+
+    if (this.inputNumber > this.MAX_NUMBER) {
+      return `Number cannot be greater than ${this.MAX_NUMBER}.`;
+    }
+
+    if (this.activeTasks.length >= this.MAX_ACTIVE_TASKS) {
+      return `You cannot have more than ${this.MAX_ACTIVE_TASKS} active tasks. Please wait for some tasks to complete or cancel existing tasks.`;
+    }
+
+    return null;
   }
 
   checkPrime(): void {
-    if (this.inputNumber === null) {
-      alert('Please enter a valid integer.');
+    const validationError = this.validateCheck();
+    if (validationError) {
+      alert(validationError);
       return;
     }
 
@@ -75,7 +72,7 @@ export class HomeComponent {
     const newTask: PrimeChackHistory = {
       id: 0,
       userId: this.currentUser?.nameid,
-      number: this.inputNumber,
+      number: this.inputNumber!,
       isPrime: false,
       progress: 0,
       requestDateTime: new Date(),
@@ -83,7 +80,7 @@ export class HomeComponent {
 
     const request: PrimeChackRequest = {
       userId: this.currentUser?.nameid,
-      number: this.inputNumber,
+      number: this.inputNumber!,
     };
 
     this.primeChackService.createPrimeCheckRequest(request).subscribe({
@@ -98,6 +95,27 @@ export class HomeComponent {
         this.isChecking = false;
       }
     });
+  }
+
+  loadRequestHistory(): void {
+    const currentUserId = this.authService.getCurrentUser()?.nameid;
+  
+    if (currentUserId) {
+      this.primeChackService.getRequestsByUserId(currentUserId).subscribe(userRequests => {
+        this.activeTasks = userRequests.filter(req => req.progress >= 0 && req.progress < 100);
+        this.userRequestHistory = userRequests
+          .filter(req => req.progress === 100 || req.progress === -1)
+          .sort((a, b) => new Date(b.requestDateTime).getTime() - new Date(a.requestDateTime).getTime());
+        
+        this.activeTasks.forEach(task => {
+          if (!this.progressIntervals.has(task.id)) {
+            this.trackProgress(task.id);
+          }
+        });
+      });
+    } else {
+      console.error('Current user ID is undefined.');
+    }
   }
 
   trackProgress(taskId: number): void {
@@ -116,7 +134,6 @@ export class HomeComponent {
               this.activeTasks[taskIndex].isPrime = history.isPrime;
               clearInterval(this.progressIntervals.get(taskId));
               this.progressIntervals.delete(taskId);
-              // Move task to history
               this.loadRequestHistory();
             }
           }
@@ -155,7 +172,6 @@ export class HomeComponent {
   }
 
   ngOnDestroy(): void {
-    // Clean up all intervals when component is destroyed
     this.progressIntervals.forEach(interval => clearInterval(interval));
     this.progressIntervals.clear();
   }
