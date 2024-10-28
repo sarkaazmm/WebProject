@@ -20,6 +20,8 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
 
     public static int TasksInProgressCount { get; private set; } = 0;
 
+
+    // POST: api/primechackhistory/create
     [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreatePrimeCheckRequest([FromBody] PrimeCheckRequestDto requestDto)
@@ -189,6 +191,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(request.Progress);
     }
 
+    // GET: api/primechackhistory/running-tasks-count
     [Authorize]
     [HttpGet("running-tasks-count")]
     public IActionResult GetRunningTasksCount()
