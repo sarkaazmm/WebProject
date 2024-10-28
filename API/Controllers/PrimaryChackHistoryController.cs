@@ -87,6 +87,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
                 using var scope = _serviceProvider.CreateScope();
                 scopedContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 await PrimeCheckService.IsPrime(primeCheckHistory.Id, scopedContext);
+                TasksInProgressCount--;
             }
             catch (OperationCanceledException)
             {
@@ -95,6 +96,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
                 cancellationToken.IsCanceled = true;
                 scopedContext.CancellationToken.Update(cancellationToken);
                 await scopedContext.SaveChangesAsync();
+                TasksInProgressCount--;
             }
             catch (Exception ex)
             {

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Application Architecture Diagram</title>
+</head>
+<body>
+  <svg width="600" height="800" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <style>
+        .background { fill: #1a1a1a; }
+        .component {
+          fill: #333;
+          stroke: #666;
+          stroke-width: 2;
+          rx: 12;
+          ry: 12;
+        }
+        .connection { stroke: #ccc; stroke-width: 2; }
+        .text {
+          fill: #fff;
+          font-family: 'Arial', sans-serif;
+          font-size: 16px;
+          text-anchor: middle;
+        }
+      </style>
+    </defs>
+
+    <!-- Background -->
+    <rect width="600" height="800" class="background" />
+
+    <!-- User -->
+    <g transform="translate(230, 50)">
+      <rect width="140" height="60" class="component" />
+      <text x="70" y="35" class="text">User</text>
+    </g>
+
+    <!-- Angular Frontend -->
+    <g transform="translate(230, 150)">
+      <rect width="140" height="60" class="component" />
+      <text x="70" y="35" class="text">Angular Frontend</text>
+    </g>
+
+    <!-- Reverse Proxy (YARP) -->
+    <g transform="translate(230, 250)">
+      <rect width="140" height="60" class="component" />
+      <text x="70" y="35" class="text">Reverse Proxy (YARP)</text>
+    </g>
+
+    <!-- ASP.NET Backend 1 -->
+    <g transform="translate(80, 400)">
+      <rect width="140" height="60" class="component" />
+      <text x="70" y="35" class="text">ASP.NET Backend 1</text>
+    </g>
+
+    <!-- ASP.NET Backend 2 -->
+    <g transform="translate(380, 400)">
+      <rect width="140" height="60" class="component" />
+      <text x="70" y="35" class="text">ASP.NET Backend 2</text>
+    </g>
+
+    <!-- MS SQL Database -->
+    <g transform="translate(230, 600)">
+      <rect width="140" height="60" class="component" />
+      <text x="70" y="35" class="text">MS SQL Database</text>
+    </g>
+
+    <!-- Connections -->
+    <line x1="300" y1="110" x2="300" y2="150" class="connection" />
+    <line x1="300" y1="210" x2="300" y2="250" class="connection" />
+    <line x1="300" y1="310" x2="150" y2="400" class="connection" />
+    <line x1="300" y1="310" x2="450" y2="400" class="connection" />
+    <line x1="150" y1="460" x2="300" y2="600" class="connection" />
+    <line x1="450" y1="460" x2="300" y2="600" class="connection" />
+  </svg>
+</body>
+</html>
