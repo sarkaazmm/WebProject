@@ -218,26 +218,6 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(request);
     }
 
-    [Authorize]
-    [HttpGet("get-prime-chack-request-progress{id}")]
-    public async Task<IActionResult> GetRequestProgress(int id)
-    {
-        var request = await _context.PrimeCheckHistory
-            .FirstOrDefaultAsync(r => r.Id == id);
-        if (request == null)
-        {
-            return NotFound("Request not found.");
-        }
-
-        var currentUserId = _userManager.GetUserId(User);
-        if (request.UserId != currentUserId)
-        {
-            return Forbid("You are not authorized to access this request.");
-        }
-
-        return Ok(request.Progress);
-    }
-
     // GET: api/primechackhistory/running-tasks-count
     [Authorize]
     [HttpGet("running-tasks-count")]
