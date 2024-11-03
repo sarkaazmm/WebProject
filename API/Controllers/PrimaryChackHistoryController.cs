@@ -19,6 +19,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     private readonly IServiceProvider _serviceProvider = serviceProvider;
 
     public static int TasksInProgressCount { get; private set; } = 0;
+    public static bool ProcessLoopInUse { get; private set; } = false;
     private const int MaxActiveTasksForUser = 5;
     private const int MaxActiveTasksForServer = 2;
     private const int MaxNumber = 1500;
@@ -81,6 +82,8 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
 
         if (primeCheckHistory.Progress == 0)
             await StartPrimeCheckRequest(primeCheckHistory.Id);
+        //else if (!ProcessLoopInUse)
+            //ProcessLoop();
 
         return Ok(new { 
             message = TasksInProgressCount < MaxActiveTasksForServer ? "Task started successfully" : "Task added to queue", 
@@ -186,6 +189,34 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         nextTask.Progress = 0;
         await _context.SaveChangesAsync();
         return await StartPrimeCheckRequest(nextTask.Id);
+    }
+
+    private async void ProcessLoop()
+    {
+        ProcessLoopInUse = true;
+        Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n!!!!!!!!!  \n Processing Loop started\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        while (TasksInProgressCount < MaxActiveTasksForServer)
+        {
+            await ProcessNextFromQueue();
+        }
+        ProcessLoopInUse = false;
+    }
+
+    [Authorize]
+    [HttpGet("queue")]
+    public async Task<IActionResult> Queue(){
+        var tasks = await _context.PrimeCheckHistory
+            .Where(x => x.Progress == -3)
+            .ToListAsync();
+        return Ok(tasks);
+    }
+
+    [Authorize]
+    [HttpGet("queue-size")]
+    public int  QueueSize(){
+        int tasks = _context.PrimeCheckHistory
+            .Count(x => x.Progress == -3);
+        return tasks;
     }
 
     [Authorize]
