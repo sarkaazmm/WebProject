@@ -23,7 +23,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     private const int MaxNumber = 1500;
 
 
-// POST: api/primechackhistory/create
+    // POST: api/primecheckhistory/create
     [Authorize]
     [HttpPost("create")]
     public async Task<IActionResult> CreatePrimeCheckRequest([FromBody] PrimeCheckRequestDto requestDto)
@@ -33,7 +33,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         if (user == null)
             return NotFound("User not found.");
 
-        // Validate number range to avoid processing out-of-range values
+        // Validate number range
         if (requestDto.Number > MaxNumber)
         {
             return BadRequest(new { 
@@ -43,37 +43,34 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
             });
         }
 
-        // Count user's active tasks to prevent exceeding task limit
+        // Check active tasks count
         var activeTasksCount = await _context.PrimeCheckHistory
             .CountAsync(x => x.UserId == requestDto.UserId 
-                && x.Progress != 100  // Not completed
-                && x.Progress != -1); // Not cancelled
+                && x.Progress != 100  
+                && x.Progress != -1);
 
         if (activeTasksCount >= MaxActiveTasks)
         {
             return BadRequest(new { 
-                message = $"You have reached the maximum limit of {MaxActiveTasks} active tasks. Please wait for some tasks to complete or cancel existing tasks.",
+                message = $"You have reached the maximum limit of {MaxActiveTasks} active tasks.",
                 currentActiveTasks = activeTasksCount,
                 maxAllowedTasks = MaxActiveTasks
             });
         }
 
-        // Initialize and save new PrimeCheckHistory record with initial progress of 0
+        // Create new PrimeCheckHistory record
         var primeCheckHistory = new PrimeCheckHistory
         {
             UserId = requestDto.UserId,
             Number = requestDto.Number,
             IsPrime = false,
             RequestDateTime = DateTime.UtcNow,
-            Progress = 0  // Explicitly set initial progress
+            Progress = 0
         };
         _context.PrimeCheckHistory.Add(primeCheckHistory);
         await _context.SaveChangesAsync();
 
-        // Increase the static task count when task is added
-        TasksInProgressCount++;
-
-        // Create and save a cancellation token for the task
+        // Create cancellation token
         var cancellationToken = new Models.CancellationToken
         {
             PrimeCheckHistoryId = primeCheckHistory.Id,
@@ -83,7 +80,34 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         await _context.CancellationToken.AddAsync(cancellationToken);
         await _context.SaveChangesAsync();
 
-        // Execute task in a separate thread to avoid blocking
+        // Start the task processing
+        await StartPrimeCheckRequest(primeCheckHistory.Id);
+
+        return Ok(new { 
+            message = "Task started successfully", 
+            taskId = primeCheckHistory.Id,
+            activeTasksCount = activeTasksCount + 1,
+            remainingTaskSlots = MaxActiveTasks - (activeTasksCount + 1),
+            number = requestDto.Number
+        });
+    }
+
+    // POST: api/primecheckhistory/start/{id}
+    [Authorize]
+    [HttpPost("start/{id}")]
+    public async Task<IActionResult> StartPrimeCheckRequest(int id)
+    {
+        var task = await _context.PrimeCheckHistory.FindAsync(id);
+        if (task == null)
+            return NotFound("Task not found.");
+
+        if (task.Progress == 100)
+            return BadRequest("Task is already completed.");
+
+        // Increase the static task count
+        TasksInProgressCount++;
+
+        // Execute task in a separate thread
         _ = System.Threading.Tasks.Task.Run(async () =>
         {
             AppDbContext scopedContext;
@@ -92,7 +116,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
                 using var scope = _serviceProvider.CreateScope();
                 scopedContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 
-                await PrimeCheckService.IsPrime(primeCheckHistory.Id, scopedContext);
+                await PrimeCheckService.IsPrime(id, scopedContext);
                 TasksInProgressCount--;
             }
             catch (OperationCanceledException)
@@ -100,9 +124,14 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
                 using var scope = _serviceProvider.CreateScope();
                 scopedContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 
-                cancellationToken.IsCanceled = true;
-                scopedContext.CancellationToken.Update(cancellationToken);
-                await scopedContext.SaveChangesAsync();
+                var cancellationToken = await scopedContext.CancellationToken
+                    .FirstOrDefaultAsync(x => x.PrimeCheckHistoryId == id);
+                if (cancellationToken != null)
+                {
+                    cancellationToken.IsCanceled = true;
+                    scopedContext.CancellationToken.Update(cancellationToken);
+                    await scopedContext.SaveChangesAsync();
+                }
                 TasksInProgressCount--;
             }
             catch (Exception ex)
@@ -112,25 +141,21 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
                 using var scope = _serviceProvider.CreateScope();
                 scopedContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 
-                var task = await scopedContext.PrimeCheckHistory.FindAsync(primeCheckHistory.Id);
-                if (task != null)
+                var taskToUpdate = await scopedContext.PrimeCheckHistory.FindAsync(id);
+                if (taskToUpdate != null)
                 {
-                    task.Progress = -2; 
+                    taskToUpdate.Progress = -2; 
                     await scopedContext.SaveChangesAsync();
                 }
-                TasksInProgressCount--; 
+                
+                TasksInProgressCount--;
             }
         });
 
-        // Respond with task creation success message
-        return Ok(new { 
-            message = "Task started successfully", 
-            taskId = primeCheckHistory.Id,
-            activeTasksCount = activeTasksCount + 1,
-            remainingTaskSlots = MaxActiveTasks - (activeTasksCount + 1),
-            number = requestDto.Number
-        });
+        return Ok(new { message = "Task processing started", taskId = id });
     }
+
+
 
 
     [Authorize]
