@@ -152,6 +152,41 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
         return Ok(new { message = "Task processing started", taskId = id });
     }
 
+    [HttpPost("process-next")]
+    public async Task<IActionResult> ProcessNextFromQueue()
+    {
+        System.Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBBBBBBBBBBB\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+
+        if (TasksInProgressCount >= MaxActiveTasksForServer)
+        {
+            return Ok(new { 
+                message = "Server is at maximum capacity",
+                activeTasksCount = TasksInProgressCount
+            });
+        }
+        
+        System.Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCCCCCCCCCCC\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        
+        
+        var nextTask = await _context.PrimeCheckHistory
+            .FirstOrDefaultAsync(x => x.Progress == -3);
+        System.Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{nextTask.Number}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+       
+        if (nextTask == null)
+        {
+            
+            return Ok(new { 
+                message = "No tasks in queue",
+                activeTasksCount = TasksInProgressCount
+            });
+        }
+
+        Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n!!!!!!!!!  \n Processing next task: {nextTask.Number}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+
+        nextTask.Progress = 0;
+        await _context.SaveChangesAsync();
+        return await StartPrimeCheckRequest(nextTask.Id);
+    }
 
     [Authorize]
     [HttpPost("cancel-request/{id}")]
