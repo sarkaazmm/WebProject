@@ -66,7 +66,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
             Number = requestDto.Number,
             IsPrime = false,
             RequestDateTime = DateTime.UtcNow,
-            Progress = TasksInProgressCount<MaxActiveTasksForServer ? 0 : -3
+            Progress = TasksInProgressCount < MaxActiveTasksForServer ? 0 : -3
         };
         _context.PrimeCheckHistory.Add(primeCheckHistory);
         await _context.SaveChangesAsync();
@@ -82,8 +82,8 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
 
         if (primeCheckHistory.Progress == 0)
             await StartPrimeCheckRequest(primeCheckHistory.Id);
-        //else if (!ProcessLoopInUse)
-            //ProcessLoop();
+        else if (!ProcessLoopInUse)
+            ProcessLoop();
 
         return Ok(new { 
             message = TasksInProgressCount < MaxActiveTasksForServer ? "Task started successfully" : "Task added to queue", 
@@ -108,7 +108,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
 
         TasksInProgressCount++;
 
-        _ = System.Threading.Tasks.Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             AppDbContext scopedContext;
             try
@@ -158,7 +158,7 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     [HttpPost("process-next")]
     public async Task<IActionResult> ProcessNextFromQueue()
     {
-        System.Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBBBBBBBBBBB\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBBBBBBBBBBB\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
         if (TasksInProgressCount >= MaxActiveTasksForServer)
         {
@@ -168,12 +168,9 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
             });
         }
         
-        System.Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCCCCCCCCCCC\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        
         
         var nextTask = await _context.PrimeCheckHistory
             .FirstOrDefaultAsync(x => x.Progress == -3);
-        System.Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{nextTask.Number}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
        
         if (nextTask == null)
         {
@@ -194,12 +191,26 @@ public class PrimeChackHistoryController(UserManager<AppUser> userManager, AppDb
     private async void ProcessLoop()
     {
         ProcessLoopInUse = true;
-        Console.WriteLine($"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n!!!!!!!!!  \n Processing Loop started\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-        while (TasksInProgressCount < MaxActiveTasksForServer)
-        {
-            await ProcessNextFromQueue();
+        
+        try 
+        {            
+            while (true)
+            {
+                if (QueueSize() == 0) break;
+                
+                if (TasksInProgressCount < MaxActiveTasksForServer)
+                {
+                    await ProcessNextFromQueue();
+                }
+                
+                await Task.Delay(100);
+                System.Console.WriteLine("\n\n\n\nLOOP\n\n\n\n");
+            }
         }
-        ProcessLoopInUse = false;
+        finally 
+        {
+            ProcessLoopInUse = false;
+        }
     }
 
     [Authorize]
