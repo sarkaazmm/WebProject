@@ -1,14 +1,12 @@
-using API.Data;
-using API.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Core.Data;
+using Core.Models;
+using Core.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
-using API.Services;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("JWTSettings");
@@ -24,6 +22,9 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(@"Server=(localdb)\simple-db;Database=simple-db;Trusted_Connection=True;"));
+
+builder.Services.AddScoped<PrimeCheckHistoryRepository>();
+builder.Services.AddScoped<CancelationTokenRepository>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()

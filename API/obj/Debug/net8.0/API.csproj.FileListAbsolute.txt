@@ -1,3 +1,10 @@
+C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.csproj.AssemblyReference.cache
+C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.AssemblyInfoInputs.cache
+C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.AssemblyInfo.cs
+C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.csproj.CoreCompileInputs.cache
+C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cache
+C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.sourcelink.json
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\appsettings.Development.json
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\appsettings.json
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\API.exe
@@ -7,6 +14,7 @@ C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\API.dll
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\API.pdb
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\Azure.Core.dll
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\Azure.Identity.dll
+C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\Humanizer.dll
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -128,13 +136,8 @@ C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\runtimes\w
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.csproj.AssemblyReference.cache
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.GeneratedMSBuildEditorConfig.editorconfig
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.AssemblyInfoInputs.cache
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.AssemblyInfo.cs
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.csproj.CoreCompileInputs.cache
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cs
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.MvcApplicationPartsAssemblyInfo.cache
+C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\Core.dll
+C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\Core.pdb
 C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\staticwebassets.build.json
 C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\staticwebassets.development.json
 C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\staticwebassets\msbuild.API.Microsoft.AspNetCore.StaticWebAssets.props
@@ -149,5 +152,3 @@ C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\refint\API
 C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.pdb
 C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.genruntimeconfig.cache
 C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\ref\API.dll
-C:\Halia\University\University_Y3\WEB\WebProject\API\obj\Debug\net8.0\API.sourcelink.json
-C:\Halia\University\University_Y3\WEB\WebProject\API\bin\Debug\net8.0\BCrypt.Net-Next.dll

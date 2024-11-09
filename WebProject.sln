@@ -5,7 +5,11 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{859C938C-F82F-4438-831D-95C7D4A7F018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadBalancer", "LoadBalancer\LoadBalancer.csproj", "{6794B674-2DA9-49C3-A8EC-26B7CCD4C799}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoadBalancer", "LoadBalancer\LoadBalancer.csproj", "{6794B674-2DA9-49C3-A8EC-26B7CCD4C799}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimeCheckService", "PrimeCheckService\PrimeCheckService.csproj", "{6EA42096-1975-4BA4-88F6-C064EE8F8A18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{6794B674-2DA9-49C3-A8EC-26B7CCD4C799}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6794B674-2DA9-49C3-A8EC-26B7CCD4C799}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6794B674-2DA9-49C3-A8EC-26B7CCD4C799}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EA42096-1975-4BA4-88F6-C064EE8F8A18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EA42096-1975-4BA4-88F6-C064EE8F8A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EA42096-1975-4BA4-88F6-C064EE8F8A18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EA42096-1975-4BA4-88F6-C064EE8F8A18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

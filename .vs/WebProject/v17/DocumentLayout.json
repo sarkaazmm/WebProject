@@ -1,0 +1,194 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\api\\services\\primecheckservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|solutionrelative:api\\services\\primecheckservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\api\\dtos\\primecheckrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|solutionrelative:api\\dtos\\primecheckrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6EA42096-1975-4BA4-88F6-C064EE8F8A18}|PrimeCheckService\\PrimeCheckService.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\primecheckservice\\services\\checkservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6EA42096-1975-4BA4-88F6-C064EE8F8A18}|PrimeCheckService\\PrimeCheckService.csproj|solutionrelative:primecheckservice\\services\\checkservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\api\\controllers\\primarychackhistorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|solutionrelative:api\\controllers\\primarychackhistorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6EA42096-1975-4BA4-88F6-C064EE8F8A18}|PrimeCheckService\\PrimeCheckService.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\primecheckservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6EA42096-1975-4BA4-88F6-C064EE8F8A18}|PrimeCheckService\\PrimeCheckService.csproj|solutionrelative:primecheckservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\api\\controllers\\rolescontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|solutionrelative:api\\controllers\\rolescontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}|Core\\Core.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\core\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}|Core\\Core.csproj|solutionrelative:core\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{859C938C-F82F-4438-831D-95C7D4A7F018}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}|Core\\Core.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\core\\repositories\\cancelationtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}|Core\\Core.csproj|solutionrelative:core\\repositories\\cancelationtokenrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}|Core\\Core.csproj|c:\\halia\\university\\university_y3\\web\\webproject\\core\\repositories\\primecheckhistoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}|Core\\Core.csproj|solutionrelative:core\\repositories\\primecheckhistoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PrimeCheckRequestDto.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Dtos\\PrimeCheckRequestDto.cs",
+              "RelativeDocumentMoniker": "API\\Dtos\\PrimeCheckRequestDto.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Dtos\\PrimeCheckRequestDto.cs",
+              "RelativeToolTip": "API\\Dtos\\PrimeCheckRequestDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T10:14:43.706Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PrimeCheckService.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Services\\PrimeCheckService.cs",
+              "RelativeDocumentMoniker": "API\\Services\\PrimeCheckService.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Services\\PrimeCheckService.cs",
+              "RelativeToolTip": "API\\Services\\PrimeCheckService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T09:15:54.545Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RolesControllers.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Controllers\\RolesControllers.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\RolesControllers.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Controllers\\RolesControllers.cs",
+              "RelativeToolTip": "API\\Controllers\\RolesControllers.cs",
+              "ViewState": "AgIAAFEAAAAAAAAAAAAAAA8AAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T11:05:20.931Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\Core\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Core\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\Core\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Core\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T10:46:30.706Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Program.cs",
+              "RelativeDocumentMoniker": "API\\Program.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Program.cs",
+              "RelativeToolTip": "API\\Program.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAYwGkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T09:16:37.545Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CheckService.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\PrimeCheckService\\Services\\CheckService.cs",
+              "RelativeDocumentMoniker": "PrimeCheckService\\Services\\CheckService.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\PrimeCheckService\\Services\\CheckService.cs",
+              "RelativeToolTip": "PrimeCheckService\\Services\\CheckService.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAuwB4AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T11:37:26.017Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "PrimaryChackHistoryController.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Controllers\\PrimaryChackHistoryController.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\PrimaryChackHistoryController.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\API\\Controllers\\PrimaryChackHistoryController.cs",
+              "RelativeToolTip": "API\\Controllers\\PrimaryChackHistoryController.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAIAwwFEAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-04T16:48:25.617Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\PrimeCheckService\\Program.cs",
+              "RelativeDocumentMoniker": "PrimeCheckService\\Program.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\PrimeCheckService\\Program.cs",
+              "RelativeToolTip": "PrimeCheckService\\Program.cs",
+              "ViewState": "AgIAAFYAAAAAAAAAAAAYwFcAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T09:20:57.206Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CancelationTokenRepository.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\Core\\Repositories\\CancelationTokenRepository.cs",
+              "RelativeDocumentMoniker": "Core\\Repositories\\CancelationTokenRepository.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\Core\\Repositories\\CancelationTokenRepository.cs",
+              "RelativeToolTip": "Core\\Repositories\\CancelationTokenRepository.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAawCgAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T10:50:17.463Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "PrimeCheckHistoryRepository.cs",
+              "DocumentMoniker": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\Core\\Repositories\\PrimeCheckHistoryRepository.cs",
+              "RelativeDocumentMoniker": "Core\\Repositories\\PrimeCheckHistoryRepository.cs",
+              "ToolTip": "C:\\Halia\\University\\University_Y3\\WEB\\WebProject\\Core\\Repositories\\PrimeCheckHistoryRepository.cs",
+              "RelativeToolTip": "Core\\Repositories\\PrimeCheckHistoryRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAuwEkAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-09T11:10:03.729Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,4 @@
-using API.Data;
-using API.Models;
-using System;
+using Core.Data;
 
 namespace API.Services;
 public static class PrimeCheckService
