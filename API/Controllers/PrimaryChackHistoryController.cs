@@ -84,7 +84,7 @@ public class PrimeChackHistoryController : ControllerBase
             RequestDateTime = DateTime.UtcNow,
             Progress = -3//TasksInProgressCount < MaxActiveTasksForServer ? 0 : -3
         };
-        
+        _primeCheckHistoryRepository.Add(primeCheckHistory);
         //WHY primeCheckHistory.Id is 0 here?
 
         var cancellationToken = new Core.Models.CancellationToken
@@ -93,7 +93,6 @@ public class PrimeChackHistoryController : ControllerBase
             IsCanceled = false
         };
 
-        _primeCheckHistoryRepository.Add(primeCheckHistory);
         _cancelationTokenRepository.Add(cancellationToken);
         
         //await _context.CancellationToken.AddAsync(cancellationToken);
@@ -136,60 +135,6 @@ public class PrimeChackHistoryController : ControllerBase
         return Ok(new { message = "Task processing started", taskId = id });
     }
 
-    [HttpPost("process-next")]
-    public async Task<IActionResult> ProcessNextFromQueue()
-    {
-        /*
-        if (TasksInProgressCount >= MaxActiveTasksForServer)
-        {
-            return Ok(new { 
-                message = "Server is at maximum capacity",
-                activeTasksCount = TasksInProgressCount
-            });
-        }
-        
-        var nextTask = await _context.PrimeCheckHistory
-            .FirstOrDefaultAsync(x => x.Progress == -3);
-       
-        if (nextTask == null)
-        {
-            
-            return Ok(new { 
-                message = "No tasks in queue",
-                activeTasksCount = TasksInProgressCount
-            });
-        }
-
-        nextTask.Progress = 0;
-        await _context.SaveChangesAsync();
-        return await StartPrimeCheckRequest(nextTask.Id);*/
-        return Ok();
-    }
-
-    private async void ProcessLoop()
-    {
-        ProcessLoopInUse = true;
-
-        try
-        {
-            while (true)
-            {
-                if (QueueSize() == 0) break;
-
-                if (TasksInProgressCount < MaxActiveTasksForServer)
-                {
-                    await ProcessNextFromQueue();
-                }
-
-                await Task.Delay(100);
-                System.Console.WriteLine("\n\n\n\nLOOP\n\n\n\n");
-            }
-        }
-        finally
-        {
-            ProcessLoopInUse = false;
-        }
-    }
 
     [Authorize]
     [HttpGet("queue")]
@@ -218,15 +163,10 @@ public class PrimeChackHistoryController : ControllerBase
         {
             var cancellationToken = _cancelationTokenRepository.GetByPrimeCheckHistoryId(id);
 
-            //await _context.CancellationToken
-            //.FirstOrDefaultAsync(r => r.PrimeCheckHistoryId == id);
-
             if (cancellationToken == null)
                 return NotFound("Cancellation token not found for this request.");
 
             var task = _primeCheckHistoryRepository.GetById(id);
-            //await _context.PrimeCheckHistory
-            //    .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
                 return NotFound("Prime check task not found.");
@@ -238,11 +178,8 @@ public class PrimeChackHistoryController : ControllerBase
                 return BadRequest("Task is already cancelled.");
 
             cancellationToken.IsCanceled = true;
-            //await _context.SaveChangesAsync();
 
             task.Progress = -1;
-            //_context.PrimeCheckHistory.Update(task);
-            // _context.SaveChangesAsync();
 
             TasksInProgressCount--;
 
@@ -280,9 +217,6 @@ public class PrimeChackHistoryController : ControllerBase
     public async Task<IActionResult> GetRequestsByUserId(string id)
     {
         var requests = _primeCheckHistoryRepository.GetByUserId(id);
-        //await _context.PrimeCheckHistory
-        //    .Where(r => r.UserId == id)
-        //    .ToListAsync();
 
         if (requests == null || !requests.Any())
         {
@@ -297,9 +231,6 @@ public class PrimeChackHistoryController : ControllerBase
     public async Task<IActionResult> GetRequest(int id)
     {
         var request = _primeCheckHistoryRepository.GetById(id);
-
-        //await _context.PrimeCheckHistory
-        //    .FirstOrDefaultAsync(r => r.Id == id);
 
         if (request == null)
         {
