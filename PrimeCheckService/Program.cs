@@ -100,13 +100,12 @@ class Program
                 {
                     Console.WriteLine($"Thread {Thread.CurrentThread.ManagedThreadId}:\t Processing Task: {nextTask.Id}");
                     _primeCheckHistoryRepository.UpdateProgress(nextTask.Id, 0);
+                    
                     service.IsPrime(nextTask.Id).GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error processing task {nextTask.Id}: {ex.Message}");
-                    // Optionally update task status to failed
-                    // _primeCheckHistoryRepository.UpdateTaskStatus(nextTask.Id, "Failed");
                 }
             }
             else
@@ -122,11 +121,11 @@ class Program
         lock (_lockObject)
         {
             var task = _primeCheckHistoryRepository.GetNextTask();
-            // if (task != null)
-            // {
-            //     // Optionally mark the task as "InProgress" here to prevent other threads from picking it up
-            //     // _primeCheckHistoryRepository.UpdateTaskStatus(task.Id, "InProgress");
-            // }
+            if (task != null)
+            {
+                task.Progress = 0; 
+                _context.SaveChanges();
+            }
             return task;
         }
     }

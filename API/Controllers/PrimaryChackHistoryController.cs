@@ -85,7 +85,6 @@ public class PrimeChackHistoryController : ControllerBase
             Progress = -3//TasksInProgressCount < MaxActiveTasksForServer ? 0 : -3
         };
         _primeCheckHistoryRepository.Add(primeCheckHistory);
-        //WHY primeCheckHistory.Id is 0 here?
 
         var cancellationToken = new Core.Models.CancellationToken
         {
@@ -95,12 +94,6 @@ public class PrimeChackHistoryController : ControllerBase
 
         _cancelationTokenRepository.Add(cancellationToken);
         
-        //await _context.CancellationToken.AddAsync(cancellationToken);
-        //await _context.SaveChangesAsync();
-        
-        // if (primeCheckHistory.Progress == 0)
-        //     ProcessQueue();
-
         
         return Ok(new
         {
@@ -112,7 +105,7 @@ public class PrimeChackHistoryController : ControllerBase
         });
     }
 
-    // POST: api/primecheckhistory/start/{id}
+    //POST: api/primecheckhistory/start/{id}
     [Authorize]
     [HttpPost("start/{id}")]
     public async Task<IActionResult> StartPrimeCheckRequest(int id)

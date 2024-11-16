@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimeCheckService", "PrimeC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{348EAB2C-2ABC-48CC-9296-A3DC2149E904}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED64B203-D8AB-4F62-93AE-8EBD7510F22B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{348EAB2C-2ABC-48CC-9296-A3DC2149E904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348EAB2C-2ABC-48CC-9296-A3DC2149E904}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348EAB2C-2ABC-48CC-9296-A3DC2149E904}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348EAB2C-2ABC-48CC-9296-A3DC2149E904}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

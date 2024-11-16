@@ -1,64 +1,106 @@
 ﻿using Core.Repositories;
+using System;
+using System.Threading.Tasks;
 
-namespace PrimeCheckService.Services
+namespace PrimeCheckService.Services;
+
+public class CheckService
 {
-    public class CheckService
+    private readonly PrimeCheckHistoryRepository _primeCheckHistoryRepository;
+    private readonly CancelationTokenRepository _cancelationTokenRepository;
+    private const int DelayMilliseconds = 100;
+    private const double MinProgressUpdate = 1.0; // Minimum progress update percentage
+
+    public CheckService(PrimeCheckHistoryRepository primeCheckHistoryRepository, CancelationTokenRepository cancelationTokenRepository)
     {
-        private readonly PrimeCheckHistoryRepository _primeCheckHistoryRepository;
-        private readonly CancelationTokenRepository _cancelationTokenRepository;
+        _primeCheckHistoryRepository = primeCheckHistoryRepository ?? throw new ArgumentNullException(nameof(primeCheckHistoryRepository));
+        _cancelationTokenRepository = cancelationTokenRepository ?? throw new ArgumentNullException(nameof(cancelationTokenRepository));
+    }
 
+    public async Task IsPrime(int taskId)
+    {
+        var task = _primeCheckHistoryRepository.GetById(taskId);
+        if (task == null) 
+            throw new Exception($"Task with ID {taskId} not found.");
 
-        public CheckService(PrimeCheckHistoryRepository primeCheckHistoryRepository, CancelationTokenRepository cancelationTokenRepository)
+        var cancellationToken = _cancelationTokenRepository.GetByPrimeCheckHistoryId(taskId);
+        if (cancellationToken == null)
+            throw new Exception($"Cancellation token for task ID {taskId} not found.");
+
+        try
         {
-            _primeCheckHistoryRepository = primeCheckHistoryRepository;
-            _cancelationTokenRepository = cancelationTokenRepository;
-        }
-
-        public async Task IsPrime(int taskId)
-        {
-            int count = 0;
-            var task = _primeCheckHistoryRepository.GetById(taskId);
-
-            if (task == null) throw new Exception("Task not found.");
-
             int number = task.Number;
-            int progressStep = number / 100;// * 5/5;
-            int currentProgress = progressStep;
+            int count = 0;
+            double lastProgressUpdate = 0;
+            
+            // Check initial cancellation state
+            await CheckCancellation(taskId, cancellationToken);
 
-            var cancellationToken = _cancelationTokenRepository.GetByPrimeCheckHistoryId(taskId);
-
-            for (int i = 1; i <= number; i += 1)
+            for (int i = 1; i <= number; i++)
             {
-                if (cancellationToken == null) throw new Exception("Task not found.");
-                
-                cancellationToken = _cancelationTokenRepository.GetByPrimeCheckHistoryId(taskId);
-
-
-                if (cancellationToken.IsCanceled)
+                // Only check cancellation every few iterations to reduce database calls
+                if (i % 10 == 0)
                 {
-                    task.Progress = -1;
-                    throw new OperationCanceledException();
+                    await CheckCancellation(taskId, cancellationToken);
                 }
 
-                if (number % i == 0) count++;
-                await System.Threading.Tasks.Task.Delay(100);
+                if (number % i == 0)
+                    count++;
 
-                if (i == currentProgress)
+                // Calculate current progress
+                double currentProgress = ((double)i / number) * 100;
+
+                // Update progress if we've made significant progress
+                if (currentProgress - lastProgressUpdate >= MinProgressUpdate)
                 {
-                    _primeCheckHistoryRepository.UpdateProgress(taskId, (double)i / number * 100);
-                    //UpdateProgress(taskId, (double)i / number * 100, _context);
-                    currentProgress += progressStep;
+                    await UpdateProgress(taskId, currentProgress);
+                    lastProgressUpdate = currentProgress;
                 }
+
+                await Task.Delay(DelayMilliseconds);
             }
 
-            _primeCheckHistoryRepository.UpdateProgress(taskId, 100);
-            //UpdateProgress(taskId, 100, _context);
-
+            // Update final state
+            await UpdateProgress(taskId, 100);
             task.IsPrime = count == 2;
-
             _primeCheckHistoryRepository.Update(task);
-
-            //await _context.SaveChangesAsync();
         }
+        catch (OperationCanceledException)
+        {
+            await HandleCancellation(taskId);
+            throw; // Rethrow to let caller handle cancellation
+        }
+        catch (Exception)
+        {
+            // Mark task as failed
+            task.Progress = -2; // Assuming -2 represents failed state
+            _primeCheckHistoryRepository.Update(task);
+            throw;
+        }
+    }
+
+    private async Task CheckCancellation(int taskId, Core.Models.CancellationToken cancellationToken)
+    {
+        // Refresh cancellation token state
+        var currentToken = _cancelationTokenRepository.GetByPrimeCheckHistoryId(taskId);
+        if (currentToken != null && currentToken.IsCanceled)
+        {
+            throw new OperationCanceledException($"Task {taskId} was cancelled.");
+        }
+    }
+
+    private async Task HandleCancellation(int taskId)
+    {
+        var task = _primeCheckHistoryRepository.GetById(taskId);
+        if (task != null)
+        {
+            task.Progress = -1; // Cancelled state
+            _primeCheckHistoryRepository.Update(task);
+        }
+    }
+
+    private async Task UpdateProgress(int taskId, double progress)
+    {
+        _primeCheckHistoryRepository.UpdateProgress(taskId, progress);
     }
 }

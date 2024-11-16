@@ -14,7 +14,7 @@ var jwtSettings = builder.Configuration.GetSection("JWTSettings");
 builder.Services.AddCors(options => 
 { 
     options.AddPolicy("AllowSpecificOrigin", 
-        builder => builder.WithOrigins("http://localhost:5174") 
+        builder => builder.WithOrigins("http://localhost:4200") 
                           .AllowAnyMethod() 
                           .AllowAnyHeader()); 
 });

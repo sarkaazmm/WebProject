@@ -1,0 +1,15 @@
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\bin\Debug\net8.0\ServiceManager.exe
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\bin\Debug\net8.0\ServiceManager.deps.json
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\bin\Debug\net8.0\ServiceManager.runtimeconfig.json
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\bin\Debug\net8.0\ServiceManager.dll
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\bin\Debug\net8.0\ServiceManager.pdb
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.AssemblyInfoInputs.cache
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.AssemblyInfo.cs
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.csproj.CoreCompileInputs.cache
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.sourcelink.json
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.dll
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\refint\ServiceManager.dll
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.pdb
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ServiceManager.genruntimeconfig.cache
+C:\Halia\University\University_Y3\WEB\WebProject\ServiceManager\obj\Debug\net8.0\ref\ServiceManager.dll
